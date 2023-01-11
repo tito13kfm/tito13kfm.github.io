@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
+import urllib.parse
 import time
 import json
 
@@ -76,7 +77,7 @@ for img in soup.find_all("div", {"class": "web-1bauk15"}):
 strHTML = '<html><body><div id="s11qqD"><script type="application/ld+json">'
 strHTML = strHTML + json.dumps(Dict) + "</script></div></body></html>"
 
-hs = open(Dict["name"] + ".html", "w")
+hs = open(Dict["name"].replace("’", "") + ".html", "w")
 hs.write(strHTML)
 
 # print(steps)
