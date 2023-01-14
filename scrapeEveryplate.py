@@ -107,7 +107,9 @@ def parseData():
                     measurement = measurement.replace("1 unit", "3/4 cup")
                 case _:
                     measurement = measurement.replace("unit", "")
-        combine = measurement.replace("Measurement: ", ""), ingredients[count]
+        combine = (
+            measurement.replace("Measurement: ", "") + " " + ingredients[count]
+        )
         combine = combine
         combined.append(combine)
 
