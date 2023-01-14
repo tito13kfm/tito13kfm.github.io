@@ -7,7 +7,7 @@ import time
 import json
 import os
 import PySimpleGUI as sg
-import re
+import jinja2
 
 Dict = {"@context": "http://schema.org", "@type": "Recipe"}
 options = Options()
@@ -51,7 +51,6 @@ def parseData():
     for nutritioninfo in soup.find_all("div", {"class": "web-dxsv06"}):
         if nutritioninfo.text != "Per serving":
             nutrition.append(nutritioninfo.text)
-    # print(nutrition)
 
     for item in nutrition:
         key, value = (
@@ -111,6 +110,7 @@ def buildDict(
     Dict["recipeInstructions"] = steps
     Dict["totaltime"] = "PT" + totaltime + "M"
     Dict["nutrition"] = nutritionDict
+    Dict["cookTime"] = totaltime
     return Dict
 
 
@@ -122,6 +122,18 @@ def buildRecipeJSON(Dict):
 
     hs = open(Dict["name"].replace("’", "") + ".html", "w")
     hs.write(strHTML)
+
+
+def buildRecipeHTML(Dict):
+    title = Dict["name"]
+    outputfile = Dict["name"].replace("’", "") + ".html"
+    subs = (
+        jinja2.Environment(loader=jinja2.FileSystemLoader("./"))
+        .get_template("template.html")
+        .render(title=title, json=json.dumps(Dict))
+    )
+    with open(outputfile, "w") as f:
+        f.write(subs)
 
 
 def buildIndexHTML():
@@ -174,5 +186,5 @@ gui()
 Dict = buildDict(
     title, description, photo, combined, steps, totaltime, nutritionDict
 )
-buildRecipeJSON(Dict)
+buildRecipeHTML(Dict)
 buildIndexHTML()

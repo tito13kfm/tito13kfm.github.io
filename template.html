@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{title}}</title>
+    <style>
+        /* Add some CSS styles to format the recipe */
+        .recipe-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .recipe-image {
+            display: block;
+            margin: 0 auto;
+            width: 500px;
+        }
+
+        .recipe-ingredients {
+            margin: 50px 0;
+        }
+
+        .recipe-ingredient {
+            margin-bottom: 10px;
+        }
+
+        .recipe-instructions {
+            margin: 50px 0;
+        }
+
+        .recipe-instruction {
+            margin-bottom: 20px;
+        }
+
+        .recipe-nutrition {
+            margin: 50px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="recipe-title"></h1>
+    <img class="recipe-image" src="" alt="">
+    <h2>Ingredients:</h2>
+    <ul class="recipe-ingredients"></ul>
+    <h2>Instructions:</h2>
+    <ol class="recipe-instructions"></ol>
+    <h2>Nutrition Information:</h2>
+    <ul class="recipe-nutrition"></ul>
+    <script>
+        // Get the JSON-LD data
+        const recipeData = {{ json }};
+
+        // Get the elements to display the data
+        const title = document.querySelector('.recipe-title');
+        const image = document.querySelector('.recipe-image');
+        const ingredientsList = document.querySelector('.recipe-ingredients');
+        const instructionsList = document.querySelector('.recipe-instructions');
+        const nutritionList = document.querySelector('.recipe-nutrition');
+
+        // Set the title
+        title.innerText = recipeData.name;
+        // Set the image
+        image.src = recipeData.image.url;
+        image.alt = recipeData.name;
+
+        // Loop through the ingredients and add them to the list
+        recipeData.recipeIngredient.forEach(ingredient => {
+            const listItem = document.createElement('li');
+            listItem.innerText = ingredient;
+            ingredientsList.appendChild(listItem);
+        });
+
+        // Loop through the instructions and add them to the list
+        recipeData.recipeInstructions.forEach(instruction => {
+            const listItem = document.createElement('li');
+            listItem.innerText = instruction.text;
+            instructionsList.appendChild(listItem);
+        });
+
+        // Add the nutrition information to the list
+        nutritionList.innerHTML = `
+        <li>Calories: ${recipeData.nutrition.calories}</li>
+        <li>Fat: ${recipeData.nutrition.fatContent}</li>
+        <li>Saturated Fat: ${recipeData.nutrition.saturatedFatContent}</li>
+        <li>Carbohydrates: ${recipeData.nutrition.carbohydrateContent}</li>
+        <li>Sugar: ${recipeData.nutrition.sugarContent}</li>
+        <li>Fiber: ${recipeData.nutrition.fiberContent}</li>
+        <li>Protein: ${recipeData.nutrition.proteinContent}</li>
+        <li>Cholesterol: ${recipeData.nutrition.cholesterolContent}</li>
+        <li>Sodium: ${recipeData.nutrition.sodiumContent}</li>
+      `;
+    </script>
+</body>
+
+</html>
