@@ -108,9 +108,8 @@ def buildDict(
     Dict["image"] = {"@type": "ImageObject", "url": photo["src"]}
     Dict["recipeIngredient"] = combined
     Dict["recipeInstructions"] = steps
-    Dict["totaltime"] = "PT" + totaltime + "M"
+    Dict["totalTime"] = "PT" + totaltime + "M"
     Dict["nutrition"] = nutritionDict
-    Dict["cookTime"] = totaltime
     Dict["recipeYield"] = "2 Servings"
     return Dict
 
