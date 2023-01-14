@@ -111,7 +111,7 @@ def buildDict(
     Dict["totaltime"] = "PT" + totaltime + "M"
     Dict["nutrition"] = nutritionDict
     Dict["cookTime"] = totaltime
-    Dict["recipeYield"] = 2
+    Dict["recipeYield"] = "2 Servings"
     return Dict
 
 
