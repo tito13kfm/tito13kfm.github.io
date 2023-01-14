@@ -6,6 +6,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import json
 import os
+import PySimpleGUI as sg
+import re
 
 Dict = {"@context": "http://schema.org", "@type": "Recipe"}
 options = Options()
@@ -24,8 +26,8 @@ browser = webdriver.Chrome(
 )
 
 
-def getData():
-    URL = input("Everyplate URL: ")
+def getData(URL):
+    # URL = input("Everyplate URL: ")
     browser.get(URL)
     time.sleep(2)
     return browser
@@ -41,6 +43,43 @@ def parseData():
     ingredients = []
     combined = []
     steps = []
+    totaltime = soup.find("div", {"data-test-id": "prep-time"})
+    totaltime = totaltime.text[:2]
+    nutrition = []
+    nutritionDict = {"@type": "NutritionInformation"}
+
+    for nutritioninfo in soup.find_all("div", {"class": "web-dxsv06"}):
+        if nutritioninfo.text != "Per serving":
+            nutrition.append(nutritioninfo.text)
+    # print(nutrition)
+
+    for item in nutrition:
+        key, value = (
+            item[: item.index(next(filter(str.isdigit, item)))],
+            item[item.index(next(filter(str.isdigit, item))) :],
+        )
+        match key:
+            case "Calories":
+                key = "calories"
+            case "Fat":
+                key = "fatContent"
+            case "Saturated Fat":
+                key = "saturatedFatContent"
+            case "Carbohydrate":
+                key = "carbohydrateContent"
+            case "Sugar":
+                key = "sugarContent"
+            case "Dietary Fiber":
+                key = "fiberContent"
+            case "Protein":
+                key = "proteinContent"
+            case "Cholesterol":
+                key = "cholesterolContent"
+            case "Sodium":
+                key = "sodiumContent"
+            case _:
+                key = "invalidkey"
+        nutritionDict[key] = value
 
     for measurement in soup.find_all("p", {"class": "web-x2qc7m"}):
         measurements.append(measurement.text)
@@ -58,15 +97,20 @@ def parseData():
         steptext = step.text.strip().replace("\n", " ")
         steps.append({"@type": steptype, "text": steptext})
 
-    return title, description, photo, combined, steps
+    print(nutritionDict["calories"])
+    return title, description, photo, combined, steps, totaltime, nutritionDict
 
 
-def buildDict(title, description, photo, combined, steps):
+def buildDict(
+    title, description, photo, combined, steps, totaltime, nutritionDict
+):
     Dict["name"] = title.text.strip()
     Dict["description"] = description.text.strip()
     Dict["image"] = {"@type": "ImageObject", "url": photo["src"]}
     Dict["recipeIngredient"] = combined
     Dict["recipeInstructions"] = steps
+    Dict["totaltime"] = "PT" + totaltime + "M"
+    Dict["nutrition"] = nutritionDict
     return Dict
 
 
@@ -101,8 +145,34 @@ def buildIndexHTML():
     index.write(strIndexHTML)
 
 
-getData()
-title, description, photo, combined, steps = parseData()
-Dict = buildDict(title, description, photo, combined, steps)
+def gui():
+    layout = [
+        [sg.Text("Enter URL for recipe.")],
+        [sg.InputText()],
+        [sg.Submit(), sg.Cancel()],
+    ]
+
+    window = sg.Window("EveryPlate Scraper", layout)
+
+    event, values = window.read()
+    window.close()
+
+    text_input = values[0]
+    getData(text_input)
+
+
+gui()
+(
+    title,
+    description,
+    photo,
+    combined,
+    steps,
+    totaltime,
+    nutritionDict,
+) = parseData()
+Dict = buildDict(
+    title, description, photo, combined, steps, totaltime, nutritionDict
+)
 buildRecipeJSON(Dict)
 buildIndexHTML()
