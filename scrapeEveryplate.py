@@ -91,7 +91,7 @@ def parseData():
             match ingredients[count]:
                 case "Sour Cream" | "Cream Cheese" | "Carrot":
                     measurement = measurement.replace("unit", "oz.")
-                case "Dried Oregano" | "Beef Stock Concentrate" | "Chicken Stock Concentrate" | "Cumin" | "Ancho Chili Powder" | "Chili Powder" | "Soy Suauce":
+                case "Dried Oregano" | "Beef Stock Concentrate" | "Chicken Stock Concentrate" | "Cumin" | "Ancho Chili Powder" | "Chili Powder" | "Soy Sauce":
                     measurement = measurement.replace("unit", "tsp.")
                 case "White Bread":
                     measurement = measurement.replace("unit", "slice")
