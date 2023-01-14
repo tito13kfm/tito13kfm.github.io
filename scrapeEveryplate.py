@@ -87,8 +87,28 @@ def parseData():
         ingredients.append(ingredient.text)
 
     for count, measurement in enumerate(measurements):
-        combine = measurement + " " + ingredients[count]
-        combine = combine.replace("Measurement: ", "")
+        if "unit" in measurement:
+            match ingredients[count]:
+                case "Sour Cream" | "Cream Cheese" | "Carrot":
+                    measurement = measurement.replace("unit", "oz.")
+                case "Dried Oregano" | "Beef Stock Concentrate" | "Chicken Stock Concentrate" | "Cumin" | "Ancho Chili Powder" | "Chili Powder" | "Soy Suauce":
+                    measurement = measurement.replace("unit", "tsp.")
+                case "White Bread":
+                    measurement = measurement.replace("unit", "slice")
+                case "Ground Beef" | "Ground Turkey" | "Ground Pork":
+                    measurement = measurement.replace("1 unit", "10oz package")
+                case "Panko Breadcrumbs":
+                    measurement = measurement.replace("1 unit", "1/4 cup")
+                case "Shredded Pepper Jack" | "Shredded Cheddar":
+                    measurement = measurement.replace("1 unit", "1/2 cup")
+                case "Reduced Fat Milk":
+                    measurement = measurement.replace("1 unit", "1 cup")
+                case "Jasmine Rice":
+                    measurement = measurement.replace("1 unit", "3/4 cup")
+                case _:
+                    measurement = measurement.replace("unit", "")
+        combine = measurement.replace("Measurement: ", ""), ingredients[count]
+        combine = combine
         combined.append(combine)
 
     for step in soup.find_all("div", {"class": "web-1hhw9qn"}):
