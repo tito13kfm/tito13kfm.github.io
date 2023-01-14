@@ -49,8 +49,7 @@
     <ul class="recipe-nutrition"></ul>
     <script type="application/ld+json>
         // Get the JSON-LD data
-        const recipeData = { " @context": "http://schema.org" , "@type" : "Recipe" , "name" : "Lemony Greek Pork Hash"
-        , "description"
+        { " @context": "http://schema.org" , "@type" : "Recipe" , "name" : "Lemony Greek Pork Hash" , "description"
         : "Know how a different belt, bag, or hat can update an old outfit and, bam... you feel like a million bucks? Likewise, we put a Greekish spin on a breakfast-style hash and, boom! A shiny new dish that\u2019s bright and dinner-worthy. Starting with roasted diced potatoes (the food equivalent of our fave pair of jeans), we mixed in bell pepper and ground pork seasoned with oregano. For some punchy accessories, we drizzled on fresh lemon juice and a creamy Greek vinaigrette. A perfectly fried egg on top completes the look."
         , "image" : { "@type" : "ImageObject" , "url"
         : "https://images.everyplate.com/c_fill,f_auto,fl_lossy,h_800,q_auto,w_1600/everyplate_s3/image/63b48acbc469b3542001b221-47108411.jpg"
@@ -72,7 +71,8 @@
         }], "totaltime" : "PT35M" , "nutrition" : { "@type" : "NutritionInformation" , "calories" : "810kcal"
         , "fatContent" : "54g" , "saturatedFatContent" : "15g" , "carbohydrateContent" : "45g" , "sugarContent" : "5g"
         , "fiberContent" : "4g" , "proteinContent" : "34g" , "cholesterolContent" : "295mg" , "sodiumContent" : "1100mg"
-        }, "cookTime" : "35" }; // Get the elements to display the data const
+        }, "cookTime" : "35" }; // Get the elements to display the data const </script>
+        <script>
         title=document.querySelector('.recipe-title'); const image=document.querySelector('.recipe-image'); const
         ingredientsList=document.querySelector('.recipe-ingredients'); const
         instructionsList=document.querySelector('.recipe-instructions'); const
