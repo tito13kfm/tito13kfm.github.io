@@ -43,8 +43,12 @@ def parseData():
     ingredients = []
     combined = []
     steps = []
-    totaltime = soup.find("div", {"data-test-id": "prep-time"})
-    totaltime = totaltime.text[:2]
+    try:
+        totaltime = soup.find("div", {"data-test-id": "prep-time"})
+    except:
+        totaltime = ""
+    if totaltime:
+        totaltime = totaltime.text[:2]
     nutrition = []
     nutritionDict = {"@type": "NutritionInformation"}
 
@@ -130,7 +134,8 @@ def buildDict(
     Dict["image"] = {"@type": "ImageObject", "url": photo["src"]}
     Dict["recipeIngredient"] = combined
     Dict["recipeInstructions"] = steps
-    Dict["totalTime"] = "PT" + totaltime + "M"
+    if totaltime:
+        Dict["totalTime"] = "PT" + totaltime + "M"
     Dict["nutrition"] = nutritionDict
     Dict["recipeYield"] = "2 Servings"
     return Dict
@@ -163,13 +168,13 @@ def buildIndexHTML():
     files = [f for f in os.listdir(".") if f.endswith("html")]
     files.sort(key=lambda x: os.path.getmtime(x))
     for f in files:
-        if f != "index.html":
+        if f != "index.html" and f != "template.html":
             strIndexHTML = (
                 strIndexHTML
                 + "\n<p><a href='https://tito13kfm.github.io/"
                 + f
                 + "'>"
-                + f.strip(".html")
+                + f.removesuffix(".html")
                 + "</a>"
             )
 
@@ -195,18 +200,55 @@ def gui():
     getData(text_input)
 
 
-gui()
-(
-    title,
-    description,
-    photo,
-    combined,
-    steps,
-    totaltime,
-    nutritionDict,
-) = parseData()
-Dict = buildDict(
-    title, description, photo, combined, steps, totaltime, nutritionDict
-)
-buildRecipeHTML(Dict)
-buildIndexHTML()
+# gui()
+listURL = [
+    # "https://www.everyplate.com/recipes/gouda-bacon-smothered-chicken-5f5233ac4ee2b7481c0b502b",
+    # "https://www.everyplate.com/recipes/bacon-carbonara-flatbread-63a1d054ef8967b3ec0bb717?week=2023-W03",
+    # "https://www.everyplate.com/recipes/bacony-chicken-linguine-5f9c12b9e8c00e26f0491f83",
+    # "https://www.everyplate.com/recipes/buffalo-turkey-smashburgers-631f81303f4a8ab56b07d3ee",
+    # "https://www.everyplate.com/recipes/cajun-chicken-sandwiches-622fd490cddafb31d31766ee",
+    # "https://www.everyplate.com/recipes/charred-zucchini-tomato-melts-6116743148cf1901e428cbcb",
+    # "https://www.everyplate.com/recipes/cheesy-steak-onion-sandos-63a0b10d567d6a1915028767?week=2023-W03",
+    # "https://www.everyplate.com/recipes/crispy-parm-frico-burgers-5da087b8f46c5975406e2b26",
+    # "https://www.everyplate.com/recipes/cumin-beef-lettuce-wraps-639762ae07ec98914d0847df?week=2023-W02",
+    # "https://www.everyplate.com/recipes/firehouse-mac-n-cheese-629665673cbae92968074731",
+    # "https://www.everyplate.com/recipes/garlic-rosemary-chicken-5d2891f89de58100083b19b1",
+    # "https://www.everyplate.com/recipes/ginger-ponzu-turkey-bowls-5fb7d364c7e7816b27768597",
+    # "https://www.everyplate.com/recipes/2019-w2-r4-gooey-stuffed-pork-burgers-5c13d0bfe3f339058c1a84e2",
+    # "https://www.everyplate.com/recipes/southern-style-pork-chops-gravy-63b445e1871119060104364e?week=2023-W05",
+    # "https://www.everyplate.com/recipes/herby-parmesan-crusted-chicken-5fec8f42c3bf101f0400ba2f",
+    # "https://www.everyplate.com/recipes/homestyle-panko-crusted-chicken-63a0cc8c0566f8f9ee039613?week=2023-W03",
+    # "https://www.everyplate.com/recipes/hotel-butter-steak-5e0f4fbba69d465d296f9038",
+    # "https://www.everyplate.com/recipes/jammin-fig-pork-chops-63a094e7d4ce7f7ba80f109e?week=2023-W03",
+    # "https://www.everyplate.com/recipes/pepper-jack-stuffed-pork-burgers-5e7cf8088063c85c7017a0c2",
+    # "https://www.everyplate.com/recipes/linguine-italiano-5f514f12b13b96435641474c",
+    # "https://www.everyplate.com/recipes/roasted-bell-pepper-and-sausage-risotto-5d4d8cb4720732000b60fe8a",
+    # "https://www.everyplate.com/recipes/southern-style-pork-chops-gravy-63b445e1871119060104364e?week=2023-W05",
+    # "https://www.everyplate.com/recipes/southwest-pork-black-bean-chili-62b1d999aec060a5e40aa8d9",
+    "https://www.everyplate.com/recipes/honey-garlic-chicken-5e73c554f1f4f54ec32b3b6c",
+    "https://www.everyplate.com/recipes/gravy-lover-s-meatballs-5ec7da11c1fac21b2d322c38",
+    "https://www.everyplate.com/recipes/sriracha-apricot-pork-chops-6271338b63be6525ba09ae47",
+    "https://www.everyplate.com/recipes/sweet-spicy-bacon-gouda-burgers-61fc99a637144d2b12247d10",
+    "https://www.everyplate.com/recipes/sweet-spicy-ponzu-pork-meatballs-60df191939d7d825ff4b8662",
+    "https://www.everyplate.com/recipes/sweet-chili-chicken-60d55f89abdcef0ddd6ec002",
+    "https://www.everyplate.com/recipes/triple-cheese-mac-n-cheese-63a096f2117ea980da0f45f5?week=2023-W03",
+]
+
+
+for URL in listURL:
+    getData(URL)
+
+    (
+        title,
+        description,
+        photo,
+        combined,
+        steps,
+        totaltime,
+        nutritionDict,
+    ) = parseData()
+    Dict = buildDict(
+        title, description, photo, combined, steps, totaltime, nutritionDict
+    )
+    buildRecipeHTML(Dict)
+    buildIndexHTML()
